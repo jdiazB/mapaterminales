@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapa de Despacho de Combustible</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 90vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">Mapa de Despacho de Combustible por Terminal y Proveedor</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([-9.19, -75.015], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const terminales = {
+            "Callao": [-12.052, -77.135],
+            "Chimbote": [-9.074, -78.593],
+            "Conchan": [-12.213, -77.019],
+            "Cusco": [-13.532, -71.967],
+            "Eten": [-6.929, -79.850],
+            "Juliaca": [-15.499, -70.133],
+            "Mollendo": [-17.023, -71.998],
+            "Monte Azul": [-6.650, -76.635],
+            "Pampilla": [-12.055, -77.164],
+            "Pisco": [-13.710, -76.203],
+            "Salaverry": [-8.229, -78.980],
+            "Supe": [-10.795, -77.721],
+            "Talara": [-4.577, -81.273],
+            "Valero": [-12.050, -77.130]
+        };
+
+        const colores = {
+            "CORPORACION PRIMAX S.A.": "blue",
+            "PETROLEOS DEL PERU S.A.": "green",
+            "REPSOL COMERCIAL SAC": "red",
+            "VALERO PERU S.A.C.": "orange"
+        };
+
+        const despachos = [
+            // PRIMAX
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Callao", productos: [{nombre: "DIESEL B5 S-50", volumen: 392300}, {nombre: "DIESEL B5 S-50 UV", volumen: 246760}, {nombre: "GASOHOL PREMIUM", volumen: 55950}, {nombre: "GASOHOL REGULAR", volumen: 74830}] },
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Chimbote", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 17100}, {nombre: "GASOHOL REGULAR", volumen: 1500}] },
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Conchan", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 500}] },
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Cusco", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 21000}, {nombre: "GASOHOL REGULAR", volumen: 20800}] },
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Eten", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 400}] },
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Juliaca", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 21000}, {nombre: "GASOHOL REGULAR", volumen: 17750}] },
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Mollendo", productos: [{nombre: "DIESEL B5 S-50", volumen: 30500}, {nombre: "DIESEL B5 S-50 UV", volumen: 124490}, {nombre: "GASOHOL PREMIUM", volumen: 10890}, {nombre: "GASOHOL REGULAR", volumen: 26250}] },
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Pampilla", productos: [{nombre: "DIESEL B5 S-50", volumen: 64900}, {nombre: "DIESEL B5 S-50 UV", volumen: 380190}, {nombre: "GASOHOL PREMIUM", volumen: 429290}, {nombre: "GASOHOL REGULAR", volumen: 620160}] },
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Pisco", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 45800}] },
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Salaverry", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 3000}] },
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Supe", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 6000}, {nombre: "GASOHOL PREMIUM", volumen: 1500}] },
+            { proveedor: "CORPORACION PRIMAX S.A.", terminal: "Valero", productos: [{nombre: "DIESEL B5 S-50", volumen: 16650}, {nombre: "DIESEL B5 S-50 UV", volumen: 447060}, {nombre: "GASOHOL PREMIUM", volumen: 43170}, {nombre: "GASOHOL REGULAR", volumen: 101900}] },
+
+            // PETROPERU
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Chimbote", productos: [{nombre: "DIESEL B5 S-50", volumen: 1500}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Conchan", productos: [{nombre: "DIESEL B5 S-50", volumen: 4200}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Cusco", productos: [{nombre: "DIESEL B5 S-50", volumen: 2000}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Eten", productos: [{nombre: "DIESEL B5 S-50", volumen: 10000}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Callao", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 49000}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Chimbote", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 109340}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Conchan", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 62500}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Cusco", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 33300}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Juliaca", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 64380}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Mollendo", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 85820}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Salaverry", productos: [{nombre: "DIESEL B5 S-50", volumen: 8000}, {nombre: "DIESEL B5 S-50 UV", volumen: 102600}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Supe", productos: [{nombre: "DIESEL B5 S-50", volumen: 4000}, {nombre: "DIESEL B5 S-50 UV", volumen: 4850}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Pisco", productos: [{nombre: "GASOHOL PREMIUM", volumen: 1500}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Salaverry", productos: [{nombre: "GASOHOL PREMIUM", volumen: 13000}, {nombre: "GASOHOL REGULAR", volumen: 18000}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Conchan", productos: [{nombre: "GASOHOL REGULAR", volumen: 16500}] },
+            { proveedor: "PETROLEOS DEL PERU S.A.", terminal: "Juliaca", productos: [{nombre: "GASOHOL REGULAR", volumen: 23100}] },
+
+            // REPSOL
+            { proveedor: "REPSOL COMERCIAL SAC", terminal: "Juliaca", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 2230}] },
+            { proveedor: "REPSOL COMERCIAL SAC", terminal: "Mollendo", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 212330}] },
+            { proveedor: "REPSOL COMERCIAL SAC", terminal: "Monte Azul", productos: [{nombre: "DIESEL B5 S-50 UV", volumen: 34500}, {nombre: "GASOHOL PREMIUM", volumen: 40300}, {nombre: "GASOHOL REGULAR", volumen: 61750}] },
+
+            // VALERO
+            { proveedor: "VALERO PERU S.A.C.", terminal: "Valero", productos: [{nombre: "DIESEL B5 S-50", volumen: 32650}, {nombre: "DIESEL B5 S-50 UV", volumen: 710580}, {nombre: "GASOHOL PREMIUM", volumen: 164090}, {nombre: "GASOHOL REGULAR", volumen: 199760}] }
+        ];
+
+        despachos.forEach(registro => {
+            const coord = terminales[registro.terminal];
+            if (!coord) return;
+
+            const detalle = registro.productos.map(p =>
+                `<li>${p.nombre}: <b>${p.volumen.toLocaleString()} gal</b></li>`
+            ).join("");
+
+            const popup = `
+                <strong>${registro.proveedor}</strong><br>
+                <u>${registro.terminal}</u><br>
+                <ul>${detalle}</ul>
+            `;
+
+            L.circleMarker(coord, {
+                radius: 10,
+                color: colores[registro.proveedor] || 'gray',
+                fillOpacity: 0.7
+            }).addTo(map).bindPopup(popup);
+        });
+    </script>
+</body>
+</html>
